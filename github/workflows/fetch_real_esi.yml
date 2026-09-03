@@ -29,7 +29,6 @@ jobs:
 
         print('Initiating secure query connection to verified public indexes...')
         
-        # Pulling live data arrays from structural state labor framework repositories
         url = 'https://esic.gov.in'
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
         
@@ -37,13 +36,11 @@ jobs:
             response = requests.get(url, headers=headers, timeout=20)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'lxml')
-                
-                # Structural fallback table mapping array container
                 data_list = []
                 table = soup.find('table')
                 
                 if table:
-                    rows = table.find_all('tr')[1:] # Skip index header spacing
+                    rows = table.find_all('tr')[1:]
                     for row in rows:
                         cols = [td.get_text(strip=True) for td in row.find_all('td')]
                         if len(cols) >= 4:
@@ -54,7 +51,6 @@ jobs:
                                 'Verified_Contact_String': cols[4] if len(cols) > 4 else 'Check Official Records'
                             })
                 
-                # Guard rails to ensure empty blocks never contaminate production layout
                 if not data_list:
                     print('No raw records matching layout criteria. Initiating static template preservation.')
                     data_list = [{
