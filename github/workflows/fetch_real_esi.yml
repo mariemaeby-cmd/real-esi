@@ -1,80 +1,33 @@
-name: Secure ESI Real Data Sync
+name: Run ES-pital Data Pipeline
 
 on:
   workflow_dispatch: # Gives you a manual clickable button to run it instantly
   schedule:
-    - cron: '0 5 * * 1' # Automates running every Monday morning completely on its own
+    - cron: '0 5 * * 1' # Automatically updates your public website every Monday morning
 
 jobs:
-  gather-data:
+  scrape-and-publish:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Folder Repository
+    - name: Access Repository Files
       uses: actions/checkout@v3
 
-    - name: Set Up Python Cloud Engine
+    - name: Load Python Operations Environment
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Install Secure Network Dependencies
+    - name: Install Data Dependencies
       run: pip install requests pandas
 
-    - name: Fetch Real ESI Facilities From Open Database
-      run: |
-        python -c "
-        import requests
-        import pandas as pd
-        import json
+    - name: Execute Map Scraper Engine
+      run: python scraper.py
 
-        print('Connecting to public map directory registries...')
-        
-        # Overpass query parameters targeting physical healthcare nodes in India
-        overpass_url = 'https://overpass-api.de'
-        overpass_query = '''
-        [out:json][timeout:90];
-        area[\"ISO3166-1\"=\"IN\"]->.searchArea;
-        (
-          node[\"amenity\"=\"hospital\"][\"name\"~\"ESI\",i](area.searchArea);
-          way[\"amenity\"=\"hospital\"][\"name\"~\"ESI\",i](area.searchArea);
-          node[\"amenity\"=\"clinic\"][\"name\"~\"ESI\",i](area.searchArea);
-        );
-        out tags center;
-        '''
-        
-        try:
-            response = requests.post(overpass_url, data={'data': overpass_query}, timeout=60)
-            if response.status_code == 200:
-                elements = response.json().get('elements', [])
-                data_list = []
-                
-                for item in elements:
-                    tags = item.get('tags', {})
-                    state = tags.get('addr:state', 'Verified Region')
-                    city = tags.get('addr:city', tags.get('addr:district', 'India Zone'))
-                    name = tags.get('name', 'ESI Healthcare Facility')
-                    phone = tags.get('phone', tags.get('contact:phone', 'Check Portal Registry'))
-                    
-                    data_list.append({
-                        'state': state,
-                        'location': f'{name}, {city}',
-                        'type': tags.get('amenity', 'Hospital').title(),
-                        'contact': phone
-                    })
-                
-                with open('esi_live_data.json', 'w', encoding='utf-8') as f:
-                    json.dump(data_list, f, indent=4)
-                print(f'Successfully compiled {len(data_list)} verified public facilities!')
-            else:
-                print('Directory registry returned connection error:', response.status_code)
-        except Exception as e:
-            print('Encountered operational network alteration:', e)
-        "
-
-    - name: Commit and Save Records Securely to Main Branch
+    - name: Save Fresh Data and Push Live to Website
       run: |
-        git config --global user.name 'Verified Data Engine'
-        git config --global user.email 'data-engine@github.com'
+        git config --global user.name 'ES-pital Data Core'
+        git config --global user.email 'data-core@es-pital.internal'
         git add esi_live_data.json
-        git commit -m "Auto-refresh verified public ESI records" || exit 0
+        git commit -m "Auto-sync live verified geospatial map records" || exit 0
         git push
+        
