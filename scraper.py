@@ -4,7 +4,7 @@ import urllib.parse
 
 OVERPASS_URL = "https://overpass-api.de"
 
-# TYPO REMOVED: Clean query targeting hospital and clinic tags across India map nodes
+# CLEAN SYNTAX: Raw target array parameters mapping hospital and clinic nodes across India map grids
 OVERPASS_QUERY = """
 [out:json][timeout:90];
 area["ISO3166-1"="IN"]->.searchArea;
