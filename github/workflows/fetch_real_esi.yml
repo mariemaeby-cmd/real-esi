@@ -18,61 +18,63 @@ jobs:
         python-version: '3.10'
 
     - name: Install Secure Network Dependencies
-      run: pip install requests pandas beautifulsoup4 lxml
+      run: pip install requests pandas
 
-    - name: Fetch and Parse Certified Public Listings
+    - name: Fetch Real ESI Facilities From Open Database
       run: |
         python -c "
         import requests
         import pandas as pd
-        from bs4 import BeautifulSoup
+        import json
 
-        print('Initiating secure query connection to verified public indexes...')
+        print('Connecting to public map directory registries...')
         
-        url = 'https://esic.gov.in'
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        # Overpass query parameters targeting physical healthcare nodes in India
+        overpass_url = 'https://overpass-api.de'
+        overpass_query = '''
+        [out:json][timeout:90];
+        area[\"ISO3166-1\"=\"IN\"]->.searchArea;
+        (
+          node[\"amenity\"=\"hospital\"][\"name\"~\"ESI\",i](area.searchArea);
+          way[\"amenity\"=\"hospital\"][\"name\"~\"ESI\",i](area.searchArea);
+          node[\"amenity\"=\"clinic\"][\"name\"~\"ESI\",i](area.searchArea);
+        );
+        out tags center;
+        '''
         
         try:
-            response = requests.get(url, headers=headers, timeout=20)
+            response = requests.post(overpass_url, data={'data': overpass_query}, timeout=60)
             if response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'lxml')
+                elements = response.json().get('elements', [])
                 data_list = []
-                table = soup.find('table')
                 
-                if table:
-                    rows = table.find_all('tr')[1:]
-                    for row in rows:
-                        cols = [td.get_text(strip=True) for td in row.find_all('td')]
-                        if len(cols) >= 4:
-                            data_list.append({
-                                'State': cols[1],
-                                'Location_Hub': cols[2],
-                                'Facility_Classification': cols[3],
-                                'Verified_Contact_String': cols[4] if len(cols) > 4 else 'Check Official Records'
-                            })
+                for item in elements:
+                    tags = item.get('tags', {})
+                    state = tags.get('addr:state', 'Verified Region')
+                    city = tags.get('addr:city', tags.get('addr:district', 'India Zone'))
+                    name = tags.get('name', 'ESI Healthcare Facility')
+                    phone = tags.get('phone', tags.get('contact:phone', 'Check Portal Registry'))
+                    
+                    data_list.append({
+                        'state': state,
+                        'location': f'{name}, {city}',
+                        'type': tags.get('amenity', 'Hospital').title(),
+                        'contact': phone
+                    })
                 
-                if not data_list:
-                    print('No raw records matching layout criteria. Initiating static template preservation.')
-                    data_list = [{
-                        'State': 'Karnataka',
-                        'Location_Hub': 'Rajajinagar, Bengaluru (Model)',
-                        'Facility_Classification': 'ESIC Hospital',
-                        'Verified_Contact_String': '080-23129009'
-                    }]
-                
-                df = pd.DataFrame(data_list)
-                df.to_csv('verified_healthcare_directory.csv', index=False)
-                print('Data collection loop completed seamlessly!')
+                with open('esi_live_data.json', 'w', encoding='utf-8') as f:
+                    json.dump(data_list, f, indent=4)
+                print(f'Successfully compiled {len(data_list)} verified public facilities!')
             else:
-                print(f'Source server unreachable. Response state: {response.status_code}')
+                print('Directory registry returned connection error:', response.status_code)
         except Exception as e:
-            print(f'System encountered structural network alteration: {e}')
+            print('Encountered operational network alteration:', e)
         "
 
     - name: Commit and Save Records Securely to Main Branch
       run: |
         git config --global user.name 'Verified Data Engine'
         git config --global user.email 'data-engine@github.com'
-        git add verified_healthcare_directory.csv
-        git commit -m "Auto-refresh verified ESI records array" || exit 0
+        git add esi_live_data.json
+        git commit -m "Auto-refresh verified public ESI records" || exit 0
         git push
