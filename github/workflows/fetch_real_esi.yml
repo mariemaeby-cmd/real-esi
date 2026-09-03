@@ -1,4 +1,4 @@
-yamlname: Secure ESI Real Data Sync
+name: Secure ESI Real Data Sync
 
 on:
   workflow_dispatch: # Gives you a manual clickable button to run it instantly
