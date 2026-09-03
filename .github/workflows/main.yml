@@ -1,12 +1,12 @@
 name: Run ES-pital Data Pipeline
 
 on:
-  workflow_dispatch: # Keeps your manual click button active
+  workflow_dispatch:
   schedule:
-    - cron: '0 5 * * 1' # Automatically runs every Monday morning on its own
+    - cron: '0 5 * * 1'
 
 permissions:
-  contents: write # Crucial: Explicitly unlocks folder write access to bypass exit code 128
+  contents: write
 
 jobs:
   scrape-and-publish:
@@ -23,10 +23,8 @@ jobs:
     - name: Execute Map Scraper Engine
       run: python scraper.py
 
-    # SECURE PLUGIN FIX: Replaces manual terminal git commands entirely
     - name: Automatically Save and Push Fresh Data Live
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Auto-sync live verified geospatial map records"
-        file_pattern: "esi_live_data.json"
-        
+        file_pattern: "esi_live_data.json
