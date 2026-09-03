@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ES-pital | Spatial Healthcare Directory</title>
-    <!-- Leaflet Open-Source Mapping Library Styles -->
     <link rel="stylesheet" href="https://unpkg.com" crossorigin="" />
     <style>
         :root {
@@ -16,220 +15,28 @@
             --border-light: #e6e4e0;
             --card-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
         }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-offwhite);
-            color: var(--txt-charcoal);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* Top Branded App Bar Layout */
-        header {
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-light);
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1000;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--jewel-teal);
-            letter-spacing: -0.5px;
-        }
-
-        .brand span {
-            color: var(--txt-charcoal);
-        }
-
-        .tagline {
-            font-size: 13px;
-            color: var(--txt-muted);
-        }
-
-        /* Screen Splitting View Grid Workspace */
-        .workspace {
-            flex: 1;
-            display: flex;
-            position: relative;
-            height: calc(100vh - 54px);
-        }
-
-        /* Left Floating Navigation Search Card Stack Console Container */
-        .search-console {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 380px;
-            max-height: calc(100% - 40px);
-            background: rgba(252, 251, 250, 0.96);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        /* Google Maps Mimic Floating Main Query Console Engine */
-        .search-wrapper {
-            padding: 16px;
-            background: #ffffff;
-            border-bottom: 1px solid var(--border-light);
-            position: relative;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 14px 44px 14px 16px;
-            font-size: 15px;
-            color: var(--txt-charcoal);
-            background-color: var(--bg-offwhite);
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s ease;
-        }
-
-        .search-box:focus {
-            border-color: var(--jewel-teal);
-            background-color: #ffffff;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 32px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--txt-muted);
-            pointer-events: none;
-        }
-
-        /* Live Listing Scroll Window Space Layout Block */
-        .results-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 0;
-        }
-
-        .location-card {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-light);
-            cursor: pointer;
-            transition: background-color 0.15s ease;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .location-card:last-child {
-            border-bottom: none;
-        }
-
-        .location-card:hover {
-            background-color: rgba(0, 102, 102, 0.03);
-        }
-
-        .location-card.active {
-            background-color: rgba(0, 102, 102, 0.06);
-            border-left: 4px solid var(--jewel-teal);
-            padding-left: 16px;
-        }
-
-        .facility-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--txt-charcoal);
-            margin: 0 0 4px 0;
-            padding-right: 28px;
-        }
-
-        .facility-meta {
-            font-size: 13px;
-            color: var(--txt-muted);
-            margin: 2px 0;
-        }
-
-        .facility-contact {
-            font-size: 12px;
-            color: var(--jewel-teal);
-            font-weight: 500;
-            margin-top: 6px;
-        }
-
-        /* Clickable Navigation Deep-link Arrow Block */
-        .gmaps-link {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: #ffffff;
-            border: 1px solid var(--border-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--jewel-teal);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-        }
-
-        .gmaps-link:hover {
-            background-color: var(--jewel-teal);
-            color: #ffffff;
-            border-color: var(--jewel-teal);
-            transform: scale(1.05);
-        }
-
-        /* Absolute Spatial Mapping Window Canvas Layer Frame */
-        #map-view {
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background-color: #eae7e2;
-        }
-
-        /* Counter/Status Badge Element Indicator */
-        .status-counter {
-            font-size: 12px;
-            color: var(--txt-muted);
-            margin-top: 8px;
-            padding: 0 4px;
-        }
-
-        /* Screen Sizing Responsiveness Handlers */
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-offwhite); color: var(--txt-charcoal); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        header { background-color: #ffffff; border-bottom: 1px solid var(--border-light); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; }
+        .brand { font-size: 20px; font-weight: 700; color: var(--jewel-teal); letter-spacing: -0.5px; }
+        .brand span { color: var(--txt-charcoal); }
+        .tagline { font-size: 13px; color: var(--txt-muted); }
+        .workspace { flex: 1; display: flex; position: relative; height: calc(100vh - 54px); }
+        .search-console { position: absolute; top: 20px; left: 20px; width: 380px; max-height: calc(100% - 40px); background: rgba(252, 251, 250, 0.96); backdrop-filter: blur(8px); border: 1px solid var(--border-light); border-radius: 12px; box-shadow: var(--card-shadow); z-index: 1000; display: flex; flex-direction: column; overflow: hidden; }
+        .search-wrapper { padding: 16px; background: #ffffff; border-bottom: 1px solid var(--border-light); }
+        .search-box { width: 100%; padding: 14px 16px; font-size: 15px; color: var(--txt-charcoal); background-color: var(--bg-offwhite); border: 1px solid var(--border-light); border-radius: 8px; box-sizing: border-box; outline: none; }
+        .results-container { flex: 1; overflow-y: auto; padding: 8px 0; }
+        .location-card { padding: 16px 20px; border-bottom: 1px solid var(--border-light); cursor: pointer; position: relative; display: flex; flex-direction: column; }
+        .location-card:hover { background-color: rgba(0, 102, 102, 0.03); }
+        .location-card.active { background-color: rgba(0, 102, 102, 0.06); border-left: 4px solid var(--jewel-teal); padding-left: 16px; }
+        .facility-name { font-size: 15px; font-weight: 600; margin: 0 0 4px 0; }
+        .facility-meta { font-size: 13px; color: var(--txt-muted); margin: 2px 0; }
+        .gmaps-link { position: absolute; right: 20px; top: 20px; width: 32px; height: 32px; border-radius: 50%; background-color: #ffffff; border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; color: var(--jewel-teal); text-decoration: none; font-weight: bold; }
+        .gmaps-link:hover { background-color: var(--jewel-teal); color: #ffffff; }
+        #map-view { width: 100%; height: 100%; z-index: 1; }
+        .status-counter { font-size: 12px; color: var(--txt-muted); margin-top: 8px; }
         @media (max-width: 600px) {
             .workspace { flex-direction: column-reverse; }
-            .search-console {
-                position: relative;
-                top: 0;
-                left: 0;
-                width: 100%;
-                max-height: 50%;
-                border-radius: 0;
-                border-left: none;
-                border-right: none;
-                border-bottom: none;
-            }
+            .search-console { position: relative; top: 0; left: 0; width: 100%; max-height: 50%; }
             #map-view { height: 50%; }
         }
     </style>
@@ -238,64 +45,116 @@
 
     <header>
         <div class="brand">🏥 ES-pital <span>Directory</span></div>
-        <div class="tagline">Geospatial ESI Hospital Navigation</div>
+        <div class="tagline">Live OpenStreetMap ESI Hospital Navigation</div>
     </header>
 
     <div class="workspace">
-        <!-- Floating Google Maps-Style Control Console Panel Stack -->
         <div class="search-console">
             <div class="search-wrapper">
                 <input type="text" id="mapSearchInput" class="search-box" placeholder="Search all locations, states, cities..." onkeyup="processConsoleQuery()">
-                <div class="search-icon">🔍</div>
-                <div class="status-counter" id="recordCounter">Querying localized coordinates...</div>
+                <div class="status-counter" id="recordCounter">Querying global maps live...</div>
             </div>
-            <div class="results-container" id="resultsViewStack">
-                <!-- Data nodes dynamically mount array elements here -->
-            </div>
+            <div class="results-container" id="resultsViewStack"></div>
         </div>
-
-        <!-- Spatial Geospatial Base Canvas Framework Layer -->
         <div id="map-view"></div>
     </div>
 
-    <!-- Leaflet Architecture Script Requirements -->
     <script src="https://unpkg.com" crossorigin=""></script>
     <script>
         let mapInstance = null;
         let markersGroupArray = [];
         let locationRecordsDatabase = [];
 
-        // 1. Fire up the Core Map Engine Canvas view on boot
         function initializeSpatialMap() {
-            // Centers view dynamically across unified India region coordinate center grids
-            mapInstance = L.map('map-view', {
-                zoomControl: false 
-            }).setView([22.9734, 78.6568], 5);
-
-            // Loads minimalist grey/off-white tile layer layout theme to match palette constraints
+            mapInstance = L.map('map-view', { zoomControl: false }).setView([22.9734, 78.6568], 5);
             L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+                attribution: '&copy; OpenStreetMap contributors'
             }).addTo(mapInstance);
-
-            // Re-anchors default control widget offsets out from under left floating search panel boundaries
             L.control.zoom({ position: 'topright' }).addTo(mapInstance);
 
-            loadLiveGeospatialDatabase();
+            fetchLiveMapDataDirectly();
         }
 
-        // 2. Fetch records parsed by your python web-scraper background script array
-        function loadLiveGeospatialDatabase() {
-            fetch('esi_live_data.json')
-                .then(res => {
-                    if(!res.ok) throw new Error("Data asset offline or ungenerated yet.");
-                    return res.json();
-                })
-                .then(data => {
-                    locationRecordsDatabase = data;
-                    renderDirectoryInterface(locationRecordsDatabase);
-                })
-                .catch(err => {
-                    console.error("System structural alignment alert:", err);
-                    // Standard reliable fallback arrays deployed if repository script loop hasn't run yet
-                    locationRecordsDatabase = [
-                        { state: "Karnataka", location: "ESIC Model Hospital Rajajinagar, Bengaluru", type: "Hospital", contact: "080-23129009", lat: 12.9892, lon: 77.5534 },
+        // Bypasses all GitHub Actions completely by fetching map nodes straight to user browsers
+        function fetchLiveMapDataDirectly() {
+            const query = '[out:json][timeout:60];area["ISO3166-1"="IN"]->.a;(node["amenity"="hospital"]["name"~"ESI",i](area.a);node["amenity"="clinic"]["name"~"ESI",i](area.a););out tags center;';
+            
+            fetch('https://overpass-api.de', {
+                method: 'POST',
+                body: 'data=' + encodeURIComponent(query)
+            })
+            .then(res => res.json())
+            .then(data => {
+                const elements = data.elements || [];
+                locationRecordsDatabase = elements.map(item => {
+                    const tags = item.get ? item.get('tags') : (item.tags || {});
+                    const lat = item.lat || (item.center ? item.center.lat : 20);
+                    const lon = item.lon || (item.center ? item.center.lon : 78);
+                    return {
+                        state: tags['addr:state'] || 'India Region',
+                        location: tags.name || 'ESI Facility',
+                        city: tags['addr:city'] || tags['addr:district'] || 'Local Zone',
+                        type: (tags.amenity || 'Hospital').toUpperCase(),
+                        contact: tags.phone || tags['contact:phone'] || 'Verify via Portal',
+                        lat: lat,
+                        lon: lon
+                    };
+                });
+                renderDirectoryInterface(locationRecordsDatabase);
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('recordCounter').innerText = "Connection alert. Using local fallback view.";
+                renderDirectoryInterface([
+                    { state: "Karnataka", location: "ESIC Model Hospital Rajajinagar", city: "Bengaluru", type: "HOSPITAL", contact: "080-23129009", lat: 12.9892, lon: 77.5534 }
+                ]);
+            });
+        }
+
+        function renderDirectoryInterface(records) {
+            const viewStack = document.getElementById('resultsViewStack');
+            viewStack.innerHTML = '';
+            markersGroupArray.forEach(m => mapInstance.removeLayer(m));
+            markersGroupArray = [];
+
+            document.getElementById('recordCounter').innerText = `Showing ${records.length} active ESI facilities mapped`;
+
+            records.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'location-card';
+                card.id = `card-node-${index}`;
+                card.onclick = () => focusSpecificCoordinateNode(item.lat, item.lon, index);
+
+                card.innerHTML = `
+                    <h3 class="facility-name">${item.location}</h3>
+                    <div class="facility-meta">📍 ${item.city}, ${item.state}</div>
+                    <div class="facility-meta">📞 Contact: ${item.contact}</div>
+                    <a href="https://google.com{encodeURIComponent(item.location)}" target="_blank" class="gmaps-link" onclick="event.stopPropagation();">➔</a>
+                `;
+                viewStack.appendChild(card);
+
+                const markerPin = L.marker([item.lat, item.lon]).addTo(mapInstance);
+                markerPin.bindPopup(`<b>${item.location}</b><br>${item.city}<br>Ph: ${item.contact}`);
+                markerPin.on('click', () => focusSpecificCoordinateNode(item.lat, item.lon, index, false));
+                markersGroupArray.push(markerPin);
+            });
+        }
+
+        function focusSpecificCoordinateNode(lat, lon, idx, moveMap = true) {
+            document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
+            const c = document.getElementById(`card-node-${idx}`);
+            if(c) { c.classList.add('active'); c.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+            if(moveMap) mapInstance.setView([lat, lon], 14, { animate: true });
+            markersGroupArray[idx].openPopup();
+        }
+
+        function processConsoleQuery() {
+            const q = document.getElementById('mapSearchInput').value.toLowerCase();
+            const f = locationRecordsDatabase.filter(i => i.state.toLowerCase().includes(q) || i.location.toLowerCase().includes(q) || i.city.toLowerCase().includes(q));
+            renderDirectoryInterface(f);
+        }
+
+        window.onload = initializeSpatialMap;
+    </script>
+</body>
+</html>
